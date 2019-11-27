@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="style.css">
+        <title>Hold Shift to Check Multiple Checkboxes</title>
+    </head>
+    <body>
+        <ul>
+            <li name="item1">
+                <div class="checkbox" name="item1">
+                    <input type="checkbox" name="item1">
+                </div>
+                <p name="item1">This is an inbox layout.</p>
+            </li>
+            <li name="item2">
+                <div class="checkbox" name="item2">
+                    <input type="checkbox" name="item2">
+                </div>
+                <p name="item2">Check one item</p>
+            </li>
+            <li name="item3">
+                <div class="checkbox" name="item3">
+                    <input type="checkbox" name="item3">
+                </div>
+                <p name="item3">Hold down your Shift key</p>
+            </li>
+            <li name="item4">
+                <div class="checkbox" name="item4">
+                    <input type="checkbox" name="item4">
+                </div>
+                <p name="item4">Check a lower item</p> 
+            </li>
+            <li name="item5">
+                <div class="checkbox" name="item5">
+                    <input type="checkbox" name="item5">
+                </div>
+                <p name="item5">Everything in between should also be 
+                    set to checked</p>
+            </li>
+            <li name="item6">
+                <div class="checkbox" name="item6">
+                    <input type="checkbox" name="item6">
+                </div>
+                <p name="item6">Try to do it without any libraries</p>
+            </li>
+            <li name="item7">
+                <div class="checkbox" name="item7">
+                    <input type="checkbox" name="item7">
+                </div>
+                <p name="item7">Just regular JavaScript</p>
+            </li>
+            <li name="item8">
+                <div class="checkbox" name="item8">
+                    <input type="checkbox" name="item8">
+                </div>
+                <p name="item8">Good Luck!</p>
+            </li>
+            <li name="item9">
+                <div class="checkbox" name="item9">
+                    <input type="checkbox" name="item9">
+                </div>
+                <p name="item9">Don't forget to tweet your result!</p>
+            </li>
+        </ul>
+
+        <script>
+            checkboxes = document.querySelectorAll(`input[type="checkbox"]`);
+            checkboxes.forEach(checkbox => {checkbox.addEventListener('change', (e) => {crossText(e); crossTexts(e)})});
+            window.addEventListener('keydown', checkShift);
+            window.addEventListener('keyup', uncheckShift);
+            shiftChecked = false;   // Flag that will keep track of when the Shift key is pressed
+            firstCheckbox = -1;
+            secondCheckbox = -1;
+
+
+            function checkShift(e){
+                if(e.key !== "Shift") return;
+                shiftChecked = true;
+            }
+
+            function uncheckShift(e){
+                if(e.key !== "Shift") return;
+                shiftChecked = false;
+            }
+
+            function crossTexts(e){
+                // Get the checked (or unchecked) checkbox, and its name
+                checkbox = e.target;
+                name = checkbox.attributes.name.nodeValue;
+                // Get the checkbox number
+                number = parseInt(name.charAt(name.length - 1));
+                // Return if we're unchecking the checkbox
+                if(!checkbox.checked){
+                    firstCheckbox = -1;
+                    return;
+                }
+                // Check if there was a previously checked checkbox
+                if(firstCheckbox === -1){
+                    firstCheckbox = number;
+                    return;
+                } else {
+                    // Check if the shift key is pressed, and that the second
+                    // checkbox is lower than the first
+                    if(shiftChecked && number > firstCheckbox) {
+                        for(var i = firstCheckbox; i <= number; i++){
+                            name = "item" + i;
+                            // Check the checkboxes
+                            chb = document.querySelector(`input[name="${name}"]`);
+                            chb.checked = true;
+                            // Cross the texts
+                            text = document.querySelector(`p[name="${name}"]`);
+                            text.style.textDecoration = "line-through";
+                        }
+                        // Reset first checkbox
+                        firstCheckbox = -1
+                    }
+                }
+            }
+
+            function crossText(e){
+                checkbox = e.target;
+                name = checkbox.attributes.name.nodeValue;
+                container = document.querySelector(`li[name="${name}"]`);
+                text = document.querySelector(`p[name="${name}"]`);
+
+                if(checkbox.checked){
+                    text.style.textDecoration = "line-through";
+                    container.style.background = "rgba(200, 200, 200, 0.1)";
+                } else {
+                    text.style.textDecoration = null;
+                    container.style.background = "#FFFFFF";
+                }
+            }
+        </script>
+    </body>
+</html>
